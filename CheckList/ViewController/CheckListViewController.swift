@@ -13,6 +13,8 @@ class CheckListViewController: UITableViewController {
     //MARK: - properies
     
     var items: Array<CheckListItem> = []
+    var list : CheckList!
+    
     
     var documentsDirectory: URL
     {
@@ -37,17 +39,20 @@ class CheckListViewController: UITableViewController {
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
-        loadCheckListItems()
+        //loadCheckListItems()
     }
     
     override func awakeFromNib(){
         super.awakeFromNib()
-        loadCheckListItems()
+        //loadCheckListItems()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(documentsDirectory.absoluteString)
-        print(dataFileUrl.absoluteString)
+        self.navigationItem.title = list.name
+        for item in list.items{
+            items.append(item)
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,7 +66,7 @@ class CheckListViewController: UITableViewController {
     {
         let myCell = cell as! ChecklistItemTableViewCell
         myCell.checkmarkLabel.isHidden = !item.checked
-        saveChecklistItems()
+      //  saveChecklistItems()
         
         
     }
@@ -71,32 +76,9 @@ class CheckListViewController: UITableViewController {
          myCell.titleLabel?.text = item.title
     }
     
-    func saveChecklistItems(){
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-            let data = try? encoder.encode(items)
-
-           try? data?.write(to: dataFileUrl)
-        }
+  
     
-    func loadCheckListItems()
-    {
-        let decoder = JSONDecoder()
-        let data = try? Data.init(contentsOf: self.dataFileUrl, options: .alwaysMapped)
-        items = try! decoder.decode(Array<CheckListItem>.self, from: data!)
-    }
-    
-    
-  /*  @IBAction func addDummyToDo(_ sender: Any) {
-        items.append(CheckListItem.init(text: "New Task"))
-        self.tableView.beginUpdates()
-        
-        let indexPath:IndexPath = IndexPath(row:(self.items.count - 1), section:0)
-        
-        self.tableView.insertRows(at: [indexPath], with: .automatic)
-        
-        self.tableView.endUpdates()
-    }*/
+   
     
     //MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -146,7 +128,7 @@ class CheckListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         items.remove(at: indexPath.row)
-        saveChecklistItems()
+        //saveChecklistItems()
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
 
@@ -166,7 +148,7 @@ extension CheckListViewController: ItemDetailViewControllerDelegate
         
         self.tableView.insertRows(at: [indexPath], with: .automatic)
         
-        saveChecklistItems()
+        //saveChecklistItems()
 
         
         dismiss(animated: true, completion: nil)
@@ -178,7 +160,7 @@ extension CheckListViewController: ItemDetailViewControllerDelegate
         items[index!].title = item.title
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckListItem", for: IndexPath(row: index!, section: 0))
         configureText(for: cell, withItem: items[index!])
-        saveChecklistItems()
+       // saveChecklistItems()
         tableView.reloadData()
         dismiss(animated: true, completion: nil)
     }
