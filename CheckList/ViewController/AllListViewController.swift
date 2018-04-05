@@ -9,81 +9,49 @@
 import UIKit
 
 class AllListViewController: UITableViewController {
-    
-    var lists : Array<CheckList> = []
-
-   
-    var documentsDirectory: URL
-    {
-        get{
-            return FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask).first!
-        }
-    }
-    
-    var dataFileUrl: URL
-    {
-        get{
-            var url: URL = documentsDirectory.absoluteURL
-            url.appendPathComponent("CheckLists")
-            url.appendPathExtension("json")
-            return url       }
-        set{
-            self.dataFileUrl = newValue
-        }
-    }
-    
-    func saveChecklists(){
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        let data = try? encoder.encode(lists)
-        
-        try? data?.write(to: dataFileUrl)
-    }
-    
-    func loadCheckLists()
-    {
-        let decoder = JSONDecoder()
-        let data = try? Data.init(contentsOf: self.dataFileUrl, options: .alwaysMapped)
-        if data != nil{
-        lists = try! decoder.decode(Array<CheckList>.self, from: data!)
-        }
-    }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-     /*   let test1 = CheckList(name: "test1",items: Array<CheckListItem>())
-        let test2 = CheckList(name: "test2",items: Array<CheckListItem>())
-        let test3 = CheckList(name: "test3",items: Array<CheckListItem>())
-        let test4 = CheckList(name: "test4",items: Array<CheckListItem>())
-        lists.append(test1)
-        lists.append(test2)
-        lists.append(test3)
-        lists.append(test4)
-        for list in lists{
-            list.items.append(CheckListItem(text: "Items for " + list.name!))
-        }*/
-        loadCheckLists()
+        DataModel.sharedInstance.loadCheckLists()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        DataModel.sharedInstance.sortCheckLists()
+        tableView.reloadData()
+    }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return lists.count
+        return DataModel.sharedInstance.lists.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckList", for: indexPath)
-        cell.textLabel?.text = lists[indexPath.row].name
-        
+        cell.textLabel?.text = DataModel.sharedInstance.lists[indexPath.row].name
+        switch (DataModel.sharedInstance.lists[indexPath.row].uncheckedItemCount, DataModel.sharedInstance.lists[indexPath.row].items.count) {
+        case(_,0):
+            cell.detailTextLabel?.text = "No Items"
+        case(0,_):
+            cell.detailTextLabel?.text = "All Done !"
+        default:
+            cell.detailTextLabel?.text = "Items Left :\(DataModel.sharedInstance.lists[indexPath.row].uncheckedItemCount)"
+        }
+        cell.imageView?.image = DataModel.sharedInstance.lists[indexPath.row].icon.image
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        DataModel.sharedInstance.lists.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
     }
   
     // MARK: - Navigation
@@ -93,7 +61,7 @@ class AllListViewController: UITableViewController {
             let destination = segue.destination as! CheckListViewController
             let text = sender as! UITableViewCell
             let indexPath = tableView.indexPath(for: text)
-            destination.list = lists[(indexPath?.row)!]
+            destination.list = DataModel.sharedInstance.lists[(indexPath?.row)!]
         }
         if segue.identifier == "addCheckList" {
             let destinationNavigationController = segue.destination as! UINavigationController
@@ -108,7 +76,7 @@ class AllListViewController: UITableViewController {
             targetController.delegate = self
             let tv = sender as! UITableViewCell
             let indexPath = tableView.indexPath(for: tv)
-            targetController.itemToEdit = lists[(indexPath?.row)!]
+            targetController.itemToEdit = DataModel.sharedInstance.lists[(indexPath?.row)!]
             
         }
     }
@@ -121,30 +89,25 @@ extension AllListViewController: ListDetailViewControllerDelegate
     }
     
     func listDetailViewController(_ controller: ListDetailViewController, didFinishAddingItem item: CheckList) {
-        lists.append(item)
-        item.items.append(CheckListItem(text:"Items for " + item.name!))
-        
-        let indexPath:IndexPath = IndexPath(row:(self.lists.count - 1), section:0)
+        DataModel.sharedInstance.lists.append(item)
+   
+        let indexPath:IndexPath = IndexPath(row:(DataModel.sharedInstance.lists.count - 1), section:0)
         
         self.tableView.insertRows(at: [indexPath], with: .automatic)
-        saveChecklists()
         
         dismiss(animated: true, completion: nil)
     }
     
     func listDetailViewController(_ controller: ListDetailViewController, didFinishEditingItem item: CheckList) {
-        let index = lists.index(where:{ $0 == item })
-        lists[index!].name = item.name
+        let index = DataModel.sharedInstance.lists.index(where:{ $0 == item })
+        DataModel.sharedInstance.lists[index!].name = item.name
+        DataModel.sharedInstance.lists[index!].icon = item.icon
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckList", for: IndexPath(row: index!, section: 0))
         cell.textLabel?.text = item.name
-        //configureText(for: cell, withItem: items[index!])
-        saveChecklists()
         tableView.reloadData()
         dismiss(animated: true, completion: nil)
     }
-    
-    
-    
-    
+
 }
+
 

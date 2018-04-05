@@ -12,28 +12,9 @@ class CheckListViewController: UITableViewController {
 
     //MARK: - properies
     
-    var items: Array<CheckListItem> = []
     var list : CheckList!
     
     
-    var documentsDirectory: URL
-    {
-        get{
-            return FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask).first!
-        }
-    }
-    
-    var dataFileUrl: URL
-    {
-        get{
-            var url: URL = documentsDirectory.absoluteURL
-            url.appendPathComponent("CheckList")
-            url.appendPathExtension("json")
-            return url       }
-        set{
-            self.dataFileUrl = newValue
-        }
-    }
     
     //MARK: - life cycle
     
@@ -49,9 +30,6 @@ class CheckListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = list.name
-        for item in list.items{
-            items.append(item)
-        }
 
     }
 
@@ -66,7 +44,7 @@ class CheckListViewController: UITableViewController {
     {
         let myCell = cell as! ChecklistItemTableViewCell
         myCell.checkmarkLabel.isHidden = !item.checked
-      //  saveChecklistItems()
+ 
         
         
     }
@@ -95,7 +73,7 @@ class CheckListViewController: UITableViewController {
             targetController.delegate = self
             let tv = sender as! UITableViewCell
             let indexPath = tableView.indexPath(for: tv)
-            targetController.itemToEdit = items[(indexPath?.row)!]
+            targetController.itemToEdit = list.items[(indexPath?.row)!]
             
         }
     }
@@ -103,15 +81,15 @@ class CheckListViewController: UITableViewController {
     
     //MARK: - TableView DataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return list.items.count
     }
     
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckListItem", for: indexPath)
-        configureText(for: cell, withItem: items[indexPath.row])
-        configureCheckmark(for: cell, withItem: items[indexPath.row])
+        configureText(for: cell, withItem: list.items[indexPath.row])
+        configureCheckmark(for: cell, withItem: list.items[indexPath.row])
         
         return cell
     }
@@ -121,14 +99,13 @@ class CheckListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckListItem", for: indexPath)
-        items[indexPath.row].toggleChecked()
-        configureCheckmark(for: cell, withItem: items[indexPath.row])
+        list.items[indexPath.row].toggleChecked()
+        configureCheckmark(for: cell, withItem: list.items[indexPath.row])
         tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        items.remove(at: indexPath.row)
-        //saveChecklistItems()
+        list.items.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
 
@@ -142,13 +119,13 @@ extension CheckListViewController: ItemDetailViewControllerDelegate
     }
     
     func itemDetailViewController(_ controller: ItemDetailViewController, didFinishAddingItem item: CheckListItem) {
-        items.append(item)
+        list.items.append(item)
         
-        let indexPath:IndexPath = IndexPath(row:(self.items.count - 1), section:0)
+        let indexPath:IndexPath = IndexPath(row:(self.list.items.count - 1), section:0)
         
         self.tableView.insertRows(at: [indexPath], with: .automatic)
         
-        //saveChecklistItems()
+
 
         
         dismiss(animated: true, completion: nil)
@@ -156,11 +133,11 @@ extension CheckListViewController: ItemDetailViewControllerDelegate
     }
     
     func itemDetailViewController(_ controller: ItemDetailViewController, didFinishEditingItem item: CheckListItem) {
-        let index = items.index(where:{ $0 == item })
-        items[index!].title = item.title
+        let index = list.items.index(where:{ $0 == item })
+        list.items[index!].title = item.title
         let cell = tableView.dequeueReusableCell(withIdentifier: "CheckListItem", for: IndexPath(row: index!, section: 0))
-        configureText(for: cell, withItem: items[index!])
-       // saveChecklistItems()
+        configureText(for: cell, withItem: list.items[index!])
+
         tableView.reloadData()
         dismiss(animated: true, completion: nil)
     }

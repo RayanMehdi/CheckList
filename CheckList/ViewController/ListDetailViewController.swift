@@ -14,6 +14,12 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
     
     var itemToEdit: CheckList?
     
+    var iconAsset: IconAsset = .Folder
+    
+    
+    @IBOutlet weak var iconLabel: UILabel!
+    @IBOutlet weak var iconImageView: UIImageView!
+    
     //MARK: - life cycle
     
     override func viewDidLoad() {
@@ -22,12 +28,20 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
             self.navigationItem.title = "Edit CheckList"
             self.titleTextField.text = item.name
         }
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         titleTextField.becomeFirstResponder()
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        if let item = itemToEdit {
+            iconLabel.text = item.icon.rawValue
+            iconImageView.image = item.icon.image
+        }else{
+            iconLabel.text = iconAsset.rawValue
+            iconImageView.image = iconAsset.image
+        }
+        
     }
     
     //MARK: - Outlets
@@ -51,7 +65,7 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
             item.name = titleTextField.text!
             delegate?.listDetailViewController(self, didFinishEditingItem: item)
         }else{
-            delegate?.listDetailViewController(self, didFinishAddingItem: CheckList(name: titleTextField.text!, items: Array<CheckListItem>()))
+            delegate?.listDetailViewController(self, didFinishAddingItem: CheckList(name: titleTextField.text!, items: [CheckListItem](), iconAsset: iconAsset))
         }
         
         
@@ -67,10 +81,41 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
         return true
     }
     
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            if segue.identifier == "showImagePicker" {
+                let destination = segue.destination as! IconPickerTableViewController
+                
+                destination.delegate = self
+            }
+    }
+    
 }
+
 
 protocol ListDetailViewControllerDelegate : class {
     func listDetailViewControllerDidCancel(_ controller: ListDetailViewController)
     func listDetailViewController(_ controller: ListDetailViewController, didFinishAddingItem item: CheckList)
     func listDetailViewController(_ controller: ListDetailViewController, didFinishEditingItem item: CheckList)
 }
+
+extension ListDetailViewController: IconPickerTableViewControllerDelegate
+{
+    
+    func iconPickerTableViewControllerDidCancel(_ controller: IconPickerTableViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func iconPickerTableViewController(_ controller: IconPickerTableViewController, didChooseIcon icon: IconAsset) {
+        if let item = itemToEdit {
+            item.icon = icon
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }else{
+        self.iconAsset = icon
+        }
+        navigationController?.popViewController(animated: true)
+    }
+    
+    
+}
+

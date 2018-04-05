@@ -14,13 +14,22 @@ class CheckList : Codable
     //MARK: - Properties
     
     var name : String?
-    var items : Array<CheckListItem> = []
+    var items  = [CheckListItem]()
+    var icon : IconAsset = .NoIcon
+    var uncheckedItemCount : Int{
+        get{
+            return items.filter{$0.checked == false}.count
+        }
+    }
+    
+    
     
     //MARK: - Life cycle
-    init(name: String, items: Array<CheckListItem>? = []) {
+    init(name: String, items: Array<CheckListItem>? = [], iconAsset: IconAsset = .NoIcon) {
         self.name = name
         self.items = items!
-    }
+        self.icon = iconAsset
+          }
     
 }
 
