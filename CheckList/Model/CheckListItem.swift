@@ -12,6 +12,9 @@ class CheckListItem: Codable {
     
     var title: String
     var checked: Bool = false
+    var dueDate = Date()
+    var itemId: Int?
+    var shouldRemind: Bool = false
     
     init(text: String) {
         self.title=text
@@ -21,6 +24,14 @@ class CheckListItem: Codable {
     init(text: String, checked: Bool) {
         self.title = text
         self.checked = checked
+    }
+    
+    init(text: String, checked: Bool, shouldRemind:Bool, dueDate:Date) {
+        self.title = text
+        self.checked = checked
+        self.shouldRemind = shouldRemind
+        self.dueDate = dueDate
+        self.itemId = Preferences.sharedInstance.nextCheckListId()
     }
     
     

@@ -21,6 +21,7 @@
 		B8E4B3E620486321003FB751 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B8E4B3E420486321003FB751 /* Main.storyboard */; };
 		B8E4B3E820486321003FB751 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8E4B3E720486321003FB751 /* Assets.xcassets */; };
 		B8EF2781204FFE3A00A4C9AE /* CheckListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8EF2780204FFE3A00A4C9AE /* CheckListItem.swift */; };
+		B8F22B5F209309DA0044E05D /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8F22B5E209309DA0044E05D /* Preferences.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		B8E4B3E720486321003FB751 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B8E4B3EC20486321003FB751 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B8EF2780204FFE3A00A4C9AE /* CheckListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListItem.swift; sourceTree = "<group>"; };
+		B8F22B5E209309DA0044E05D /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				B8EF2780204FFE3A00A4C9AE /* CheckListItem.swift */,
 				B85E73BF206CE75E007379F8 /* CheckList.swift */,
 				B8505F752075FC970050363F /* DataModel.swift */,
+				B8F22B5E209309DA0044E05D /* Preferences.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 			files = (
 				B85E73BE206CE38A007379F8 /* AllListViewController.swift in Sources */,
 				B899A8B120512CB700393B44 /* ChecklistItemTableViewCell.swift in Sources */,
+				B8F22B5F209309DA0044E05D /* Preferences.swift in Sources */,
 				B899A8AF20502EA900393B44 /* ItemDetailViewController.swift in Sources */,
 				B8505F7A20762CE70050363F /* IconPickerTableViewController.swift in Sources */,
 				B85E73C0206CE75E007379F8 /* CheckList.swift in Sources */,
@@ -327,7 +331,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = QLL3DR6XP5;
 				INFOPLIST_FILE = CheckList/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.lp.iem.CheckList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -341,7 +347,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = QLL3DR6XP5;
 				INFOPLIST_FILE = CheckList/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.lp.iem.CheckList;
 				PRODUCT_NAME = "$(TARGET_NAME)";

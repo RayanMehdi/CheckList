@@ -22,6 +22,7 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
     
     //MARK: - life cycle
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
         if let item = itemToEdit{
@@ -75,9 +76,6 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate {
     
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        //    let oldString = textField.text!
-        //   let newString = oldString.replacingCharacters(in: Range(range, in:oldString)!, with: string)
-        //   self.doneBarButtonItem.isEnabled = !newString.isEmpty
         return true
     }
     

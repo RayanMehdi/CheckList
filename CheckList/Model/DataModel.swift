@@ -17,14 +17,15 @@ class DataModel {
             selector: #selector(saveChecklists),
             name: .UIApplicationDidEnterBackground,
             object: nil)
-        defaults.register(defaults: ["firstLaunch" : true])
+        Preferences.sharedInstance.defaults.register(defaults: ["firstLaunch" : true])
+        Preferences.sharedInstance.defaults.register(defaults: ["checkListItemID" : 0])
     }
     
     //MARK: - Properties
     
     var lists = [CheckList]()
     
-    let defaults = UserDefaults.standard
+    
     
     var documentsDirectory: URL
     {
@@ -56,11 +57,11 @@ class DataModel {
     
     func loadCheckLists()
     {
-        if defaults.bool(forKey: "firstLaunch"){
+        if Preferences.sharedInstance.defaults.bool(forKey: "firstLaunch"){
             var items = [CheckListItem]()
             items.append(CheckListItem(text: "Edit your first item, Swipe me to delete", checked: false))
             lists.append(CheckList(name: "List", items: items))
-            defaults.set(false, forKey: "firstLaunch")
+            Preferences.sharedInstance.defaults.set(false, forKey: "firstLaunch")
         }else{
         let decoder = JSONDecoder()
         let data = try? Data.init(contentsOf: self.dataFileUrl, options: .alwaysMapped)

@@ -209,7 +209,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="NUZ-cd-poa" kind="show" identifier="showImagePicker" id="Hgl-q2-1Rp"/>
+                                            <segue destination="NUZ-cd-poa" kind="show" identifier="showImagePicker" id="qWI-Yw-zCj"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
